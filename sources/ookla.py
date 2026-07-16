@@ -1,21 +1,37 @@
-import feedparser
+import requests
+from bs4 import BeautifulSoup
 
-RSS_URL = "https://www.ookla.com/articles/rss.xml"
+URL = "https://www.ookla.com/articles"
 
 def get_latest_articles():
-    feed = feedparser.parse(RSS_URL)
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
 
-    print("Feed Status:", feed.status if hasattr(feed, "status") else "No Status")
-    print("Feed Title:", feed.feed.get("title", "No Title"))
-    print("Entries:", len(feed.entries))
+    response = requests.get(URL, headers=headers)
+
+    if response.status_code != 200:
+        print("Website Error:", response.status_code)
+        return []
+
+    soup = BeautifulSoup(response.text, "html.parser")
 
     articles = []
 
-    for entry in feed.entries:
-        articles.append({
-            "title": entry.title,
-            "link": entry.link,
-            "published": entry.get("published", "")
-        })
+    cards = soup.find_all("a", href=True)
 
-    return articles
+    for card in cards:
+        href = card["href"]
+
+        if "/articles/" in href and href != "/articles":
+
+            title = card.get_text(strip=True)
+
+            if len(title) > 20:
+                articles.append({
+                    "title": title,
+                    "link": "https://www.ookla.com" + href,
+                    "published": ""
+                })
+
+    return articles[:5]
