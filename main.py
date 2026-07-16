@@ -1,13 +1,21 @@
-from sources.ookla import get_latest_articles
+from sources.ookla import get_latest_articles as get_ookla_articles
+from sources.opensignal import get_latest_articles as get_opensignal_articles
+
 from telegram_service import send_message
 from article_store import load_articles, save_articles
 
-articles = get_latest_articles()
+
 sent_articles = load_articles()
 
-print(f"Found {len(articles)} articles")
 
-for article in articles:
+# -----------------------
+# OOKLA
+# -----------------------
+ookla_articles = get_ookla_articles()
+
+print(f"Found {len(ookla_articles)} Ookla articles")
+
+for article in ookla_articles:
 
     if article["link"] in sent_articles:
         print("Already Sent:", article["title"])
@@ -27,4 +35,34 @@ for article in articles:
     sent_articles.append(article["link"])
     save_articles(sent_articles)
 
-    print("New Article Sent")
+    print("New Ookla Article Sent")
+
+
+# -----------------------
+# OPENSIGNAL
+# -----------------------
+opensignal_articles = get_opensignal_articles()
+
+print(f"Found {len(opensignal_articles)} OpenSignal articles")
+
+for article in opensignal_articles:
+
+    if article["link"] in sent_articles:
+        print("Already Sent:", article["title"])
+        continue
+
+    message = f"""📡 OpenSignal Latest News
+
+📰 {article['title']}
+
+🔗 {article['link']}
+
+📅 {article['published']}
+"""
+
+    send_message(message)
+
+    sent_articles.append(article["link"])
+    save_articles(sent_articles)
+
+    print("New OpenSignal Article Sent")
