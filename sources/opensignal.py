@@ -1,18 +1,34 @@
-import feedparser
+import requests
+from bs4 import BeautifulSoup
 
-RSS_URL = "https://www.opensignal.com/blog/rss.xml"
-
+URL = "https://www.opensignal.com/blog"
 
 def get_latest_articles():
-    feed = feedparser.parse(RSS_URL)
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    response = requests.get(URL, headers=headers, timeout=20)
+
+    soup = BeautifulSoup(response.text, "html.parser")
 
     articles = []
 
-    for entry in feed.entries:
+    for a in soup.select("a[href*='/blog/']"):
+        title = a.get_text(strip=True)
+
+        href = a.get("href")
+
+        if not title:
+            continue
+
+        if href.startswith("/"):
+            href = "https://www.opensignal.com" + href
+
         articles.append({
-            "title": entry.title,
-            "link": entry.link,
-            "published": entry.get("published", "")
+            "title": title,
+            "link": href,
+            "published": ""
         })
 
     return articles
