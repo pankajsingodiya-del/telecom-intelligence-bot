@@ -4,7 +4,7 @@ articles = get_latest_articles()
 
 print(f"Found {len(articles)} articles")
 
-for article in articles[:5]:
+for article in articles[:10]:
     print(article["title"])
     print(article["link"])
-    print("-" * 50)
+    print("-" * 60)
