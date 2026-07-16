@@ -32,7 +32,13 @@ jobs:
           cat main.py
 
       - name: Run Bot
-            - name: Commit Updated Articles
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python main.py
+
+      - name: Commit Updated Articles
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
@@ -42,8 +48,3 @@ jobs:
           git diff --cached --quiet || git commit -m "Update sent articles"
 
           git push
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          python main.py
