@@ -1,4 +1,4 @@
-import requests
+from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 
 URL = "https://insights.opensignal.com/market-insights"
@@ -6,31 +6,33 @@ URL = "https://insights.opensignal.com/market-insights"
 
 def get_latest_articles():
 
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-
-    response = requests.get(URL, headers=headers, timeout=30)
-
-    print("Status:", response.status_code)
-    print("Final URL:", response.url)
-
-    soup = BeautifulSoup(response.text, "html.parser")
-
     articles = []
 
-    # Debug
-    print("Total Links:", len(soup.find_all("a")))
+    with sync_playwright() as p:
 
-    for link in soup.find_all("a", href=True):
+        browser = p.chromium.launch(headless=True)
 
-        href = link["href"]
-        title = link.get_text(strip=True)
+        page = browser.new_page(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        )
+
+        page.goto(URL, wait_until="networkidle", timeout=60000)
+
+        html = page.content()
+
+        browser.close()
+
+    soup = BeautifulSoup(html, "html.parser")
+
+    for a in soup.find_all("a", href=True):
+
+        href = a["href"]
+        title = a.get_text(strip=True)
 
         if not title:
             continue
 
-        if "/market-insights" not in href:
+        if "/market-insights/" not in href:
             continue
 
         if href.startswith("/"):
@@ -42,7 +44,7 @@ def get_latest_articles():
             "published": ""
         })
 
-    # Remove duplicate links
+    # Remove duplicates
     unique = []
     seen = set()
 
@@ -51,6 +53,6 @@ def get_latest_articles():
             unique.append(article)
             seen.add(article["link"])
 
-    print("Found", len(unique), "articles")
+    print("Found", len(unique), "OpenSignal articles")
 
     return unique
