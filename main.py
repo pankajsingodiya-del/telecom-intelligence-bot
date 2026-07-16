@@ -1,14 +1,16 @@
 from sources.ookla import get_latest_articles
 from telegram_service import send_message
+from article_store import is_sent, mark_sent
 
 articles = get_latest_articles()
 
 print(f"Found {len(articles)} articles")
 
-if len(articles) == 0:
-    send_message("❌ No Ookla news found.")
-else:
-    article = articles[0]
+for article in articles:
+
+    if is_sent(article["link"]):
+        print("Already Sent:", article["title"])
+        continue
 
     message = f"""📡 Ookla Latest News
 
@@ -19,5 +21,7 @@ else:
 📅 {article['published']}
 """
 
-    print(message)
     send_message(message)
+    mark_sent(article["link"])
+
+    print("New Article Sent")
