@@ -1,29 +1,10 @@
-import os
-import requests
+from sources.ookla import get_latest_articles
 
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+articles = get_latest_articles()
 
-message = """
-🚀 Telecom Intelligence Bot Started Successfully!
+print(f"Found {len(articles)} articles\n")
 
-✅ GitHub Actions Connected
-✅ Telegram Connected
-
-Next Step:
-📡 Ookla Monitoring
-📡 OpenSignal Monitoring
-
-Powered by Pankaj 🚀
-"""
-
-url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-
-payload = {
-    "chat_id": CHAT_ID,
-    "text": message
-}
-
-response = requests.post(url, data=payload)
-
-print(response.text)
+for article in articles[:5]:
+    print(article["title"])
+    print(article["link"])
+    print("-" * 60)
