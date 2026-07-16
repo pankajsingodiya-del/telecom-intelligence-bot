@@ -1,3 +1,6 @@
-from telegram_service import send_message
+from sources.ookla import get_latest_articles
 
-send_message("🔥 TEST MESSAGE 12345")
+articles = get_latest_articles()
+
+print("Total Articles:", len(articles))
+print(articles)
