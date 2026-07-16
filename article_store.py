@@ -15,3 +15,16 @@ def load_articles():
 def save_articles(data):
     with open(FILE, "w") as f:
         json.dump(data, f, indent=4)
+
+
+def is_sent(link):
+    articles = load_articles()
+    return link in articles
+
+
+def mark_sent(link):
+    articles = load_articles()
+
+    if link not in articles:
+        articles.append(link)
+        save_articles(articles)
