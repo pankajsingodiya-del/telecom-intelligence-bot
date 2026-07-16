@@ -7,4 +7,4 @@ print(f"Found {len(articles)} articles")
 for article in articles[:5]:
     print(article["title"])
     print(article["link"])
-    print("-" * 60)
+    print("-" * 50)
