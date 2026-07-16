@@ -1,3 +1,4 @@
+print("########## VERSION 2 ##########")
 from sources.ookla import get_latest_articles
 
 articles = get_latest_articles()
