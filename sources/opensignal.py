@@ -14,7 +14,15 @@ def get_latest_articles():
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
         )
 
-        page.goto(URL, wait_until="networkidle", timeout=60000)
+       page.goto(URL, wait_until="networkidle", timeout=60000)
+
+try:
+    page.get_by_role("button", name="Allow all").click(timeout=5000)
+    print("Cookie banner accepted")
+except:
+    print("No cookie banner found")
+
+page.wait_for_timeout(3000)
 
         page.screenshot(path="opensignal.png", full_page=True)
 
@@ -31,6 +39,8 @@ def get_latest_articles():
     soup = BeautifulSoup(html, "html.parser")
 
     print("===== ALL LINKS =====")
+
+print("Total links:", len(soup.find_all("a", href=True)))
 
     for a in soup.find_all("a", href=True):
 
