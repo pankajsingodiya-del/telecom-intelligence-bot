@@ -103,3 +103,7 @@ for article in trai_articles:
 print("====================================")
 print("Telecom Intelligence Bot Completed")
 print("====================================")
+
+from sources.dot import get_latest_articles as get_dot_articles
+
+get_dot_articles()
