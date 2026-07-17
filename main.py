@@ -134,3 +134,7 @@ for article in telecom_news_articles:
 print("====================================")
 print("Telecom Intelligence Bot Completed")
 print("====================================")
+
+from sources.opensignal_reports import get_latest_articles as get_opensignal_reports
+
+get_opensignal_reports()
