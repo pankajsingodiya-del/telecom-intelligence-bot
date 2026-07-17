@@ -16,7 +16,7 @@ def get_latest_articles():
 
         page.goto(URL, wait_until="networkidle", timeout=60000)
 
-        # Cookie popup
+        # Accept Cookie Banner
         try:
             page.get_by_role("button", name="Allow all").click(timeout=5000)
             print("Cookie banner accepted")
@@ -39,16 +39,38 @@ def get_latest_articles():
 
     soup = BeautifulSoup(html, "html.parser")
 
-    print("===== ALL LINKS =====")
-    print("Total links:", len(soup.find_all("a", href=True)))
+    articles = []
 
     for a in soup.find_all("a", href=True):
 
         href = a["href"]
         title = a.get_text(" ", strip=True)
 
-        print(title)
-        print(href)
-        print("----------------------")
+        # Only article links
+        if not href.startswith("/2026/"):
+            continue
 
-    return []
+        # Ignore tiny texts
+        if len(title) < 15:
+            continue
+
+        href = "https://insights.opensignal.com" + href
+
+        articles.append({
+            "title": title,
+            "link": href,
+            "published": ""
+        })
+
+    # Remove duplicate links
+    unique = []
+    seen = set()
+
+    for article in articles:
+        if article["link"] not in seen:
+            unique.append(article)
+            seen.add(article["link"])
+
+    print("Found", len(unique), "OpenSignal articles")
+
+    return unique
