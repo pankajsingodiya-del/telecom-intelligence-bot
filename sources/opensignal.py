@@ -6,8 +6,6 @@ URL = "https://insights.opensignal.com/market-insights"
 
 def get_latest_articles():
 
-    articles = []
-
     with sync_playwright() as p:
 
         browser = p.chromium.launch(headless=True)
@@ -30,26 +28,17 @@ def get_latest_articles():
 
         browser.close()
 
-soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html, "html.parser")
 
-for a in soup.find_all("a", href=True):
+    print("===== ALL LINKS =====")
 
-    href = a["href"]
-    title = a.get_text(" ", strip=True)
+    for a in soup.find_all("a", href=True):
 
-    print(title)
-    print(href)
-    print("----------------------")
-    
-    # Remove duplicates
-    unique = []
-    seen = set()
+        href = a["href"]
+        title = a.get_text(" ", strip=True)
 
-    for article in articles:
-        if article["link"] not in seen:
-            unique.append(article)
-            seen.add(article["link"])
+        print(title)
+        print(href)
+        print("----------------------")
 
-    print("Found", len(unique), "OpenSignal articles")
-
-    return unique
+    return []
