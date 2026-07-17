@@ -1,6 +1,7 @@
 from sources.ookla import get_latest_articles as get_ookla_articles
 from sources.opensignal import get_latest_articles as get_opensignal_articles
 from sources.trai import get_latest_articles as get_trai_articles
+from sources.telecom_news import get_latest_articles as get_telecom_news_articles
 
 from telegram_service import send_message
 from article_store import load_articles, save_articles
@@ -100,10 +101,36 @@ for article in trai_articles:
     print("New TRAI Article Sent")
 
 
+# ==========================================
+# TELECOM NEWS
+# ==========================================
+telecom_news_articles = get_telecom_news_articles()
+
+print(f"Found {len(telecom_news_articles)} Telecom News articles")
+
+for article in telecom_news_articles:
+
+    if article["link"] in sent_articles:
+        print("Already Sent:", article["title"])
+        continue
+
+    message = f"""🌎 Telecom News
+
+📰 {article['title']}
+
+🔗 {article['link']}
+
+📅 {article['published']}
+"""
+
+    send_message(message)
+
+    sent_articles.append(article["link"])
+    save_articles(sent_articles)
+
+    print("New Telecom News Article Sent")
+
+
 print("====================================")
 print("Telecom Intelligence Bot Completed")
 print("====================================")
-
-from sources.dot import get_latest_articles as get_dot_articles
-
-get_dot_articles()
