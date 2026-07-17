@@ -30,28 +30,17 @@ def get_latest_articles():
 
         browser.close()
 
-    soup = BeautifulSoup(html, "html.parser")
+soup = BeautifulSoup(html, "html.parser")
 
-    for a in soup.find_all("a", href=True):
+for a in soup.find_all("a", href=True):
 
-        href = a["href"]
-        title = a.get_text(strip=True)
+    href = a["href"]
+    title = a.get_text(" ", strip=True)
 
-        if not title:
-            continue
-
-        if "/market-insights/" not in href:
-            continue
-
-        if href.startswith("/"):
-            href = "https://insights.opensignal.com" + href
-
-        articles.append({
-            "title": title,
-            "link": href,
-            "published": ""
-        })
-
+    print(title)
+    print(href)
+    print("----------------------")
+    
     # Remove duplicates
     unique = []
     seen = set()
