@@ -26,8 +26,8 @@ def get_latest_articles():
         html = page.content()
 
         with open("opensignal.html", "w", encoding="utf-8") as f:
-        f.write(html)
-        
+            f.write(html)
+
         browser.close()
 
     soup = BeautifulSoup(html, "html.parser")
