@@ -2,22 +2,27 @@ from playwright.sync_api import sync_playwright
 
 URL = "https://www.dot.gov.in/documents/press-release"
 
-with sync_playwright() as p:
 
-    browser = p.chromium.launch(headless=True)
-    page = browser.new_page()
+def get_latest_articles():
 
-    page.goto(URL, wait_until="networkidle", timeout=60000)
+    with sync_playwright() as p:
 
-    print("Title:", page.title())
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
 
-    html = page.content()
+        page.goto(URL, wait_until="networkidle", timeout=60000)
 
-    with open("dot.html", "w", encoding="utf-8") as f:
-        f.write(html)
+        print("Title:", page.title())
 
-    page.screenshot(path="dot.png", full_page=True)
+        html = page.content()
 
-    browser.close()
+        with open("dot.html", "w", encoding="utf-8") as f:
+            f.write(html)
 
-print("Done")
+        page.screenshot(path="dot.png", full_page=True)
+
+        browser.close()
+
+    print("Done")
+
+    return []
