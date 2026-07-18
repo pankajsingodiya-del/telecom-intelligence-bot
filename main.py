@@ -91,8 +91,21 @@ print("\n====================================")
 print("ARTICLE EXTRACTOR TEST")
 print("====================================")
 
-test_url = "https://www.telecomtalk.info/jio-users-now-consume-43-7gb-of-data-every-month/996442/"
+# Get latest articles from TelecomTalk RSS
+articles = get_telecom_news_articles()
 
-article_text = extract_article(test_url)
+print("Total RSS Articles :", len(articles))
 
-print(article_text[:2000])
+if len(articles) > 0:
+
+    print("\nRSS Article Title :", articles[0]["title"])
+    print("RSS Article URL   :", articles[0]["link"])
+
+    article_text = extract_article(articles[0]["link"])
+
+    print("\n========== EXTRACTED ARTICLE ==========\n")
+    print(article_text[:2000])
+
+else:
+
+    print("No articles found in RSS feed.")
