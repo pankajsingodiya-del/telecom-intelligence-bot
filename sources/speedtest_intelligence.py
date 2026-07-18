@@ -66,13 +66,5 @@ def get_latest_articles():
     # Keep only latest 6 articles
     latest_articles = unique[:6]
 
-    
-
-    print("========== SPEEDTEST ARTICLES ==========")
-
-    for article in latest_articles:
-        print(article["title"])
-        print(article["link"])
-        print("--------------------------------")
 
     return latest_articles
