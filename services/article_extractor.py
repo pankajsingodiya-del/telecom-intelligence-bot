@@ -4,8 +4,6 @@ from bs4 import BeautifulSoup
 
 def extract_article(url):
 
-    browser = None
-
     try:
 
         with sync_playwright() as p:
@@ -22,6 +20,9 @@ def extract_article(url):
             print("Current URL:", page.url)
 
             html = page.content()
+
+            # Browser close BEFORE Playwright exits
+            browser.close()
 
         soup = BeautifulSoup(html, "html.parser")
 
@@ -77,8 +78,3 @@ def extract_article(url):
 
         print("Article Extract Error:", e)
         return ""
-
-    finally:
-
-        if browser:
-            browser.close()
