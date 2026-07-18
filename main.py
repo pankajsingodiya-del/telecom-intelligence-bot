@@ -1,31 +1,28 @@
-from sources.speedtest_intelligence import get_latest_articles as get_speedtest_articles
 from sources.ookla import get_latest_articles as get_ookla_articles
 from sources.opensignal import get_latest_articles as get_opensignal_articles
 from sources.trai import get_latest_articles as get_trai_articles
 from sources.telecom_news import get_latest_articles as get_telecom_news_articles
+from sources.speedtest_intelligence import get_latest_articles as get_speedtest_articles
+from sources.opensignal_reports import get_latest_articles as get_opensignal_reports
 
 from telegram_service import send_message
 from article_store import load_articles, save_articles
 
 
-# Load previously sent articles
 sent_articles = load_articles()
 
 
-# ==========================================
-# OOKLA
-# ==========================================
-ookla_articles = get_ookla_articles()
+def process_source(source_name, emoji, articles):
 
-print(f"Found {len(ookla_articles)} Ookla articles")
+    print(f"Found {len(articles)} {source_name} articles")
 
-for article in ookla_articles:
+    for article in articles:
 
-    if article["link"] in sent_articles:
-        print("Already Sent:", article["title"])
-        continue
+        if article["link"] in sent_articles:
+            print("Already Sent:", article["title"])
+            continue
 
-    message = f"""⚡ Ookla Latest News
+        message = f"""{emoji} {source_name}
 
 📰 {article['title']}
 
@@ -34,114 +31,51 @@ for article in ookla_articles:
 📅 {article['published']}
 """
 
-    send_message(message)
+        send_message(message)
 
-    sent_articles.append(article["link"])
-    save_articles(sent_articles)
+        sent_articles.append(article["link"])
+        save_articles(sent_articles)
 
-    print("New Ookla Article Sent")
-
-
-# ==========================================
-# OPENSIGNAL
-# ==========================================
-opensignal_articles = get_opensignal_articles()
-
-print(f"Found {len(opensignal_articles)} OpenSignal articles")
-
-for article in opensignal_articles:
-
-    if article["link"] in sent_articles:
-        print("Already Sent:", article["title"])
-        continue
-
-    message = f"""📡 OpenSignal Latest News
-
-📰 {article['title']}
-
-🔗 {article['link']}
-
-📅 {article['published']}
-"""
-
-    send_message(message)
-
-    sent_articles.append(article["link"])
-    save_articles(sent_articles)
-
-    print("New OpenSignal Article Sent")
+        print(f"New {source_name} Article Sent")
 
 
 # ==========================================
-# TRAI
-# ==========================================
-trai_articles = get_trai_articles()
-
-print(f"Found {len(trai_articles)} TRAI articles")
-
-for article in trai_articles:
-
-    if article["link"] in sent_articles:
-        print("Already Sent:", article["title"])
-        continue
-
-    message = f"""🇮🇳 TRAI Update
-
-📰 {article['title']}
-
-🔗 {article['link']}
-
-📅 {article['published']}
-"""
-
-    send_message(message)
-
-    sent_articles.append(article["link"])
-    save_articles(sent_articles)
-
-    print("New TRAI Article Sent")
-
-
-# ==========================================
-# TELECOM NEWS
-# ==========================================
-telecom_news_articles = get_telecom_news_articles()
-
-print(f"Found {len(telecom_news_articles)} Telecom News articles")
-
-for article in telecom_news_articles:
-
-    if article["link"] in sent_articles:
-        print("Already Sent:", article["title"])
-        continue
-
-    message = f"""🌎 Telecom News
-
-📰 {article['title']}
-
-🔗 {article['link']}
-
-📅 {article['published']}
-"""
-
-    send_message(message)
-
-    sent_articles.append(article["link"])
-    save_articles(sent_articles)
-
-    print("New Telecom News Article Sent")
-
-# ==========================================
-# SPEEDTEST INTELLIGENCE
+# RUN ALL SOURCES
 # ==========================================
 
-speedtest_articles = get_speedtest_articles()
+process_source(
+    "Ookla Latest News",
+    "⚡",
+    get_ookla_articles()
+)
 
-print(f"Found {len(speedtest_articles)} Speedtest Intelligence articles")
+process_source(
+    "OpenSignal Latest News",
+    "📡",
+    get_opensignal_articles()
+)
+
+process_source(
+    "TRAI Update",
+    "🇮🇳",
+    get_trai_articles()
+)
+
+process_source(
+    "Telecom News",
+    "🌎",
+    get_telecom_news_articles()
+)
+
+process_source(
+    "Speedtest Intelligence",
+    "📈",
+    get_speedtest_articles()
+)
+
+# Debug only (currently doesn't return articles)
+get_opensignal_reports()
+
 print("====================================")
 print("Telecom Intelligence Bot Completed")
 print("====================================")
-
-from sources.opensignal_reports import get_latest_articles as get_opensignal_reports
-
-get_opensignal_reports()
