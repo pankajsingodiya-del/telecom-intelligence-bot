@@ -65,3 +65,5 @@ jobs:
             dot.png
             opensignal_reports.html
             opensignal_reports.png
+            speedtest.html
+            speedtest.png
