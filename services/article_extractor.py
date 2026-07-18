@@ -3,35 +3,53 @@ from bs4 import BeautifulSoup
 
 
 def extract_article(url):
-
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
 
     try:
-
         response = requests.get(url, headers=headers, timeout=30)
-
-        if response.status_code != 200:
-            return ""
+        response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
 
-        paragraphs = soup.find_all("p")
+        # Remove unwanted tags
+        for tag in soup(["script", "style", "header", "footer", "nav", "aside"]):
+            tag.decompose()
 
-        article_text = ""
+        # Try common article containers
+        selectors = [
+            "article",
+            ".post-content",
+            ".entry-content",
+            ".td-post-content",
+            ".article-content",
+            ".single-post-content",
+            ".content"
+        ]
+
+        article = None
+
+        for selector in selectors:
+            article = soup.select_one(selector)
+            if article:
+                break
+
+        if article:
+            paragraphs = article.find_all("p")
+        else:
+            paragraphs = soup.find_all("p")
+
+        text = []
 
         for p in paragraphs:
+            line = p.get_text(" ", strip=True)
 
-            text = p.get_text(" ", strip=True)
+            if len(line) > 40:
+                text.append(line)
 
-            if len(text) > 30:
-                article_text += text + "\n"
-
-        return article_text
+        return "\n\n".join(text)
 
     except Exception as e:
-
         print("Article Extract Error:", e)
-
         return ""
