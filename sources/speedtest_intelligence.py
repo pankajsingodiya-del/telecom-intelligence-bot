@@ -1,4 +1,5 @@
 from playwright.sync_api import sync_playwright
+from bs4 import BeautifulSoup
 
 URL = "https://www.speedtest.net/insights/blog"
 
@@ -29,4 +30,39 @@ def get_latest_articles():
 
     print("Speedtest Intelligence Page Downloaded")
 
-    return []
+    soup = BeautifulSoup(html, "html.parser")
+
+    articles = []
+
+    for a in soup.find_all("a", href=True):
+
+        href = a["href"]
+        title = a.get_text(" ", strip=True)
+
+        if len(title) < 20:
+            continue
+
+        if "/articles/" not in href:
+            continue
+
+        if href.startswith("/"):
+            href = "https://www.ookla.com" + href
+
+        articles.append({
+            "title": title,
+            "link": href,
+            "published": ""
+        })
+
+    # Remove duplicates
+    unique = []
+    seen = set()
+
+    for article in articles:
+        if article["link"] not in seen:
+            unique.append(article)
+            seen.add(article["link"])
+
+    print(f"Found {len(unique)} Speedtest Intelligence articles")
+
+    return unique
