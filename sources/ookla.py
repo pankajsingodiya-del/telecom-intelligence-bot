@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 
 URL = "https://www.ookla.com/articles"
 
+
 def get_latest_articles():
     headers = {
         "User-Agent": "Mozilla/5.0"
@@ -20,18 +21,31 @@ def get_latest_articles():
 
     print("Total Cards:", len(cards))
 
-    for i, card in enumerate(cards[:3]):
-        print("=" * 60)
-        print(card.prettify())
+    article_count = 0
+
+    for card in cards:
+
+        href = card.get("href", "")
+
+        if "/articles/" in href and href != "/articles":
+
+            print("=" * 80)
+            print(card.prettify())
+
+            article_count += 1
+
+            if article_count == 2:
+                break
 
     articles = []
 
     for card in cards:
-        href = card["href"]
+
+        href = card.get("href", "")
 
         if "/articles/" in href and href != "/articles":
 
-            title = card.get_text(strip=True)
+            title = card.get_text(" ", strip=True)
 
             if len(title) > 20:
                 articles.append({
