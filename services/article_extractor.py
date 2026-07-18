@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 
 def extract_article(url):
 
+    browser = None
+
     try:
 
         with sync_playwright() as p:
@@ -14,22 +16,30 @@ def extract_article(url):
 
             page.goto(url, wait_until="networkidle", timeout=60000)
 
-            html = page.content()
+            # Debug Information
+            print("\n========== ARTICLE DEBUG ==========")
+            print("Page Title:", page.title())
+            print("Current URL:", page.url)
 
-            browser.close()
+            html = page.content()
 
         soup = BeautifulSoup(html, "html.parser")
 
-        # Remove unwanted elements
+        print("Found <article> tags :", len(soup.find_all("article")))
+        print("Found .td-post-content :", len(soup.select(".td-post-content")))
+        print("Found .entry-content :", len(soup.select(".entry-content")))
+        print("===================================\n")
+
+        # Remove unwanted tags
         for tag in soup(["script", "style", "header", "footer", "nav", "aside"]):
             tag.decompose()
 
-        # Try common article containers
+        # Common article containers
         selectors = [
+            ".td-post-content",      # TelecomTalk
             "article",
-            ".post-content",
             ".entry-content",
-            ".td-post-content",
+            ".post-content",
             ".article-content",
             ".single-post-content",
             ".content",
@@ -39,13 +49,17 @@ def extract_article(url):
         container = None
 
         for selector in selectors:
+
             container = soup.select_one(selector)
+
             if container:
+                print(f"Using Selector: {selector}")
                 break
 
         if container:
             paragraphs = container.find_all("p")
         else:
+            print("No article container found. Using all <p> tags.")
             paragraphs = soup.find_all("p")
 
         text = []
@@ -62,5 +76,9 @@ def extract_article(url):
     except Exception as e:
 
         print("Article Extract Error:", e)
-
         return ""
+
+    finally:
+
+        if browser:
+            browser.close()
