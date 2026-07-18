@@ -16,16 +16,16 @@ def get_latest_articles():
 
     soup = BeautifulSoup(response.text, "html.parser")
 
-    articles = []
-
     cards = soup.find_all("a", href=True)
 
     print("Total Cards:", len(cards))
 
-for i, card in enumerate(cards[:3]):
-    print("=" * 60)
-    print(card.prettify())
-    
+    for i, card in enumerate(cards[:3]):
+        print("=" * 60)
+        print(card.prettify())
+
+    articles = []
+
     for card in cards:
         href = card["href"]
 
