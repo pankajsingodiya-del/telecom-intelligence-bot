@@ -8,6 +8,8 @@ from sources.opensignal_reports import get_latest_articles as get_opensignal_rep
 from telegram_service import send_message
 from article_store import load_articles, save_articles
 
+# NEW IMPORT
+from services.article_extractor import extract_article
 
 sent_articles = load_articles()
 
@@ -79,3 +81,18 @@ get_opensignal_reports()
 print("====================================")
 print("Telecom Intelligence Bot Completed")
 print("====================================")
+
+
+# ==========================================================
+# ARTICLE EXTRACTOR TEST (Temporary)
+# ==========================================================
+
+print("\n====================================")
+print("ARTICLE EXTRACTOR TEST")
+print("====================================")
+
+test_url = "https://www.telecomtalk.info/jio-users-now-consume-43-7gb-of-data-every-month/996442/"
+
+article_text = extract_article(test_url)
+
+print(article_text[:2000])
