@@ -17,6 +17,6 @@ def get_latest_articles():
             "published": entry.get("published", "")
         })
 
-    print(f"Found {len(articles)} Telecom News articles")
+    
 
     return articles
