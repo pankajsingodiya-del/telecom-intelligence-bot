@@ -20,6 +20,12 @@ def get_latest_articles():
 
     cards = soup.find_all("a", href=True)
 
+    print("Total Cards:", len(cards))
+
+for i, card in enumerate(cards[:3]):
+    print("=" * 60)
+    print(card.prettify())
+    
     for card in cards:
         href = card["href"]
 
