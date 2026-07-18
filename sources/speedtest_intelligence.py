@@ -63,13 +63,16 @@ def get_latest_articles():
             unique.append(article)
             seen.add(article["link"])
 
-    print(f"Found {len(unique)} Speedtest Intelligence articles")
+    # Keep only latest 6 articles
+    latest_articles = unique[:6]
+
+    print(f"Found {len(latest_articles)} Speedtest Intelligence articles")
 
     print("========== SPEEDTEST ARTICLES ==========")
 
-    for article in unique:
+    for article in latest_articles:
         print(article["title"])
         print(article["link"])
         print("--------------------------------")
 
-    return unique
+    return latest_articles
