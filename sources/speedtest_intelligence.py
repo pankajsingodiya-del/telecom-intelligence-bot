@@ -64,12 +64,12 @@ def get_latest_articles():
             seen.add(article["link"])
 
     print(f"Found {len(unique)} Speedtest Intelligence articles")
-    
-print("========== SPEEDTEST ARTICLES ==========")
 
-for article in unique:
-    print(article["title"])
-    print(article["link"])
-    print("--------------------------------")
-    
+    print("========== SPEEDTEST ARTICLES ==========")
+
+    for article in unique:
+        print(article["title"])
+        print(article["link"])
+        print("--------------------------------")
+
     return unique
