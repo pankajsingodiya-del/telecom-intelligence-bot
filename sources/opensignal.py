@@ -71,6 +71,6 @@ def get_latest_articles():
             unique.append(article)
             seen.add(article["link"])
 
-    print("Found", len(unique), "OpenSignal articles")
+    
 
     return unique
