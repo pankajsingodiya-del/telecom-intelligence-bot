@@ -1,3 +1,4 @@
+from sources.speedtest_intelligence import get_latest_articles as get_speedtest_articles
 from sources.ookla import get_latest_articles as get_ookla_articles
 from sources.opensignal import get_latest_articles as get_opensignal_articles
 from sources.trai import get_latest_articles as get_trai_articles
@@ -130,7 +131,13 @@ for article in telecom_news_articles:
 
     print("New Telecom News Article Sent")
 
+# ==========================================
+# SPEEDTEST INTELLIGENCE
+# ==========================================
 
+speedtest_articles = get_speedtest_articles()
+
+print(f"Found {len(speedtest_articles)} Speedtest Intelligence articles")
 print("====================================")
 print("Telecom Intelligence Bot Completed")
 print("====================================")
