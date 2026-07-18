@@ -66,7 +66,7 @@ def get_latest_articles():
     # Keep only latest 6 articles
     latest_articles = unique[:6]
 
-    print(f"Found {len(latest_articles)} Speedtest Intelligence articles")
+    
 
     print("========== SPEEDTEST ARTICLES ==========")
 
